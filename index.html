@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KST Mobile - Motherboard Sales</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-dark: #0a1929;
+            --primary-green: #00ff9d;
+            --secondary-green: #00cc7a;
+            --light-gray: #f0f0f0;
+            --dark-gray: #1e2a38;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 255, 157, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 80% 70%, rgba(0, 255, 157, 0.05) 0%, transparent 20%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: rgba(10, 25, 41, 0.95);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 255, 157, 0.2);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            background: linear-gradient(to right, var(--primary-green), #00e6ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .logo i {
+            color: var(--primary-green);
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .admin-header {
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Products Section */
+        .section {
+            padding: 7rem 5% 3rem;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--primary-green);
+            border-radius: 2px;
+        }
+        
+        .section-title p {
+            color: #aaa;
+            max-width: 700px;
+            margin: 1rem auto 0;
+            line-height: 1.6;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .product-card {
+            background: rgba(30, 42, 56, 0.7);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid rgba(0, 255, 157, 0.1);
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-green);
+            box-shadow: 0 10px 25px rgba(0, 255, 157, 0.15);
+        }
+        
+        .product-image {
+            height: 200px;
+            background: linear-gradient(45deg, #0a1929, #1e2a38);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(0, 255, 157, 0.1);
+            overflow: hidden;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+        
+        .product-content {
+            padding: 1.5rem;
+        }
+        
+        .product-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-model {
+            color: #bbb;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-price {
+            color: var(--primary-green);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-warranty {
+            color: #bbb;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-content p {
+            color: #bbb;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .admin-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: none;
+        }
+        
+        .delete-btn {
+            background: rgba(255, 0, 0, 0.7);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            overflow: auto;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: var(--dark-gray);
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 800px;
+            width: 90%;
+            position: relative;
+            border: 1px solid var(--primary-green);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5rem;
+            color: white;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary-green);
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .modal-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 255, 157, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1.5rem;
+        }
+        
+        .modal-icon i {
+            font-size: 2.5rem;
+            color: var(--primary-green);
+        }
+        
+        .modal-title h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .modal-title .product-model {
+            font-size: 1.1rem;
+        }
+        
+        .modal-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .modal-specs {
+            background: rgba(10, 20, 30, 0.7);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 157, 0.1);
+        }
+        
+        .spec-item {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .spec-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .spec-title {
+            color: var(--primary-green);
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        
+        .spec-value {
+            color: #ddd;
+        }
+        
+        .modal-image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #0a1929, #1e2a38);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 255, 157, 0.1);
+            overflow: hidden;
+        }
+        
+        .modal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .modal-footer {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* Admin Panel */
+        .admin-panel {
+            background: rgba(30, 42, 56, 0.9);
+            padding: 2rem;
+            margin: 2rem auto;
+            border-radius: 10px;
+            border: 1px solid var(--primary-green);
+            max-width: 800px;
+            display: none;
+        }
+        
+        .admin-panel h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-green);
+            text-align: center;
+        }
+        
+        .admin-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .form-row {
+            margin-bottom: 1rem;
+        }
+        
+        .form-row label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #ddd;
+        }
+        
+        .form-row input,
+        .form-row textarea {
+            width: 100%;
+            padding: 0.7rem;
+            background: rgba(10, 20, 30, 0.7);
+            border: 1px solid rgba(0, 255, 157, 0.1);
+            border-radius: 5px;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .form-row textarea {
+            min-height: 80px;
+        }
+        
+        .admin-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+        
+        .admin-login-btn {
+            background: rgba(0, 255, 157, 0.1);
+            border: 1px solid var(--primary-green);
+            color: var(--primary-green);
+            padding: 0.6rem 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        
+        .admin-login-btn:hover {
+            background: rgba(0, 255, 157, 0.2);
+        }
+        
+        .admin-login-btn i {
+            margin-right: 5px;
+        }
+        
+        /* Admin password change instructions */
+        .password-instructions {
+            background: rgba(30, 42, 56, 0.9);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--primary-green);
+            margin-top: 2rem;
+            display: none;
+        }
+        
+        .password-instructions h4 {
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .password-instructions ol {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .password-instructions li {
+            margin-bottom: 0.5rem;
+            color: #bbb;
+            line-height: 1.6;
+        }
+        
+        .password-instructions code {
+            background: rgba(0,0,0,0.3);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+            display: block;
+            margin: 5px 0;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        
+        .toggle-instructions {
+            background: transparent;
+            border: none;
+            color: var(--primary-green);
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .security-note {
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 4px solid gold;
+            padding: 10px;
+            margin-top: 15px;
+            border-radius: 4px;
+        }
+        
+        /* Contact Button */
+        .contact-purchase {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 0.8rem 1.5rem;
+            background: var(--primary-green);
+            color: var(--primary-dark);
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            margin-top: 1rem;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 255, 157, 0.3);
+        }
+        
+        .contact-purchase:hover {
+            background: var(--secondary-green);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 255, 157, 0.4);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .modal-body {
+                grid-template-columns: 1fr;
+            }
+            
+            .section {
+                padding: 6rem 5% 2rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .admin-login-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+            
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .product-card {
+                padding: 1rem;
+            }
+            
+            .modal-content {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-microchip"></i>
+            <h1>KST Mobile</h1>
+        </div>
+        
+        <div class="admin-header">
+            <button class="admin-login-btn" id="admin-login-btn">
+                <i class="fas fa-lock"></i> Admin Login
+            </button>
+        </div>
+    </header>
+
+    <!-- Products Section -->
+    <section class="section">
+        <div class="section-title">
+            <h2>Mobile Motherboards</h2>
+            <p>We stock genuine and compatible motherboards for all popular smartphone models.</p>
+        </div>
+        
+        <div class="products-grid" id="products-container">
+            <!-- Product cards will be generated by JavaScript -->
+        </div>
+        
+        <!-- Admin Panel -->
+        <div class="admin-panel" id="admin-panel">
+            <h3><i class="fas fa-plus-circle"></i> Add New Product</h3>
+            
+            <!-- Password change instructions -->
+            <div class="password-instructions" id="password-instructions">
+                <h4><i class="fas fa-key"></i> How to Change Admin Password</h4>
+                <ol>
+                    <li>Open your browser's developer console (F12)</li>
+                    <li>Paste this code and press Enter:
+                        <code>sha256("your-new-password").then(hash => console.log("New Hash: " + hash));</code>
+                    </li>
+                    <li>Copy the generated hash value</li>
+                    <li>Replace the <code>ADMIN_PASSWORD_HASH</code> value in the script with your new hash</li>
+                </ol>
+                <div class="security-note">
+                    <strong>Security Note:</strong> This must be done before uploading to GitHub. Never use simple passwords like "admin123".
+                </div>
+            </div>
+            
+            <button class="toggle-instructions" id="toggle-instructions">Show Password Change Instructions</button>
+            
+            <div class="admin-form">
+                <div class="form-row">
+                    <label for="product-name">Product Name</label>
+                    <input type="text" id="product-name" placeholder="Enter product name">
+                </div>
+                
+                <div class="form-row">
+                    <label for="product-model">Model</label>
+                    <input type="text" id="product-model" placeholder="Enter model number">
+                </div>
+                
+                <div class="form-row">
+                    <label for="product-specs">Specifications</label>
+                    <textarea id="product-specs" placeholder="Enter specifications"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <label for="product-price">Price (MMK)</label>
+                    <input type="number" id="product-price" placeholder="Enter price">
+                </div>
+                
+                <div class="form-row">
+                    <label for="product-warranty">Warranty (days)</label>
+                    <input type="number" id="product-warranty" placeholder="Enter warranty days">
+                </div>
+                
+                <div class="form-row">
+                    <label for="product-notes">Custom Notes</label>
+                    <textarea id="product-notes" placeholder="Enter custom notes"></textarea>
+                </div>
+                
+                <div class="form-row">
+                    <label for="product-image">Image URL</label>
+                    <input type="text" id="product-image" placeholder="Enter image URL">
+                </div>
+            </div>
+            
+            <div class="admin-actions">
+                <button class="contact-purchase" id="add-product-btn">
+                    <i class="fas fa-plus"></i> Add Product
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Modal -->
+    <div class="modal" id="product-modal">
+        <div class="modal-content">
+            <button class="close-modal" id="close-modal">&times;</button>
+            
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-microchip"></i>
+                </div>
+                <div class="modal-title">
+                    <h2 id="modal-product-name">Product Name</h2>
+                    <div class="product-model" id="modal-product-model">Model Number</div>
+                </div>
+            </div>
+            
+            <div class="modal-body">
+                <div class="modal-specs">
+                    <div class="spec-item">
+                        <div class="spec-title">Specifications</div>
+                        <div class="spec-value" id="modal-specs">Specifications details will appear here...</div>
+                    </div>
+                    
+                    <div class="spec-item">
+                        <div class="spec-title">Price</div>
+                        <div class="spec-value" id="modal-price">MMK 0</div>
+                    </div>
+                    
+                    <div class="spec-item">
+                        <div class="spec-title">Warranty</div>
+                        <div class="spec-value" id="modal-warranty">0 days</div>
+                    </div>
+                    
+                    <div class="spec-item">
+                        <div class="spec-title">Notes</div>
+                        <div class="spec-value" id="modal-notes">Additional notes will appear here...</div>
+                    </div>
+                </div>
+                
+                <div class="modal-image">
+                    <img id="modal-image" src="" alt="Motherboard">
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="contact-purchase" id="contact-purchase-btn">
+                    <i class="fas fa-phone-alt"></i> Contact for Purchase
+                </button>
+                <div id="modal-admin-controls" style="display: none;">
+                    <button class="delete-btn" id="modal-delete-btn">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Secure Admin Password Implementation
+        // ===================================
+        
+        // SHA-256 hash function for password security
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+        
+        // Store the hash of your admin password (not the actual password)
+        const ADMIN_PASSWORD_HASH = "6dacf19f5e8976c9ee0918a0990e7c0bfb2df944e800007ac81c12ae4617f15c";
+        
+        // Admin state with localStorage persistence
+        let isAdmin = localStorage.getItem('kst_admin') === 'true' || false;
+        
+        // DOM Elements
+        const productsContainer = document.getElementById('products-container');
+        const productModal = document.getElementById('product-modal');
+        const closeModal = document.getElementById('close-modal');
+        const adminPanel = document.getElementById('admin-panel');
+        const adminLoginBtn = document.getElementById('admin-login-btn');
+        const addProductBtn = document.getElementById('add-product-btn');
+        const modalAdminControls = document.getElementById('modal-admin-controls');
+        const modalDeleteBtn = document.getElementById('modal-delete-btn');
+        const contactPurchaseBtn = document.getElementById('contact-purchase-btn');
+        
+        // Sample product data with direct image URLs
+        const products = [
+            {
+                id: 1,
+                name: "Samsung Galaxy S21",
+                model: "SM-G991B",
+                specs: "Exynos 2100, 8GB RAM, 256GB Storage, 5G Support",
+                price: "350,000 MMK",
+                warranty: "180 days",
+                notes: "Original motherboard with 6 months warranty. Tested and certified.",
+                image: "https://images.unsplash.com/photo-1595941069915-4ebc5197c14a?q=80&w=500&auto=format&fit=crop"
+            },
+            {
+                id: 2,
+                name: "iPhone 12 Pro",
+                model: "A2407",
+                specs: "A14 Bionic, 6GB RAM, 256GB Storage, 5G Support",
+                price: "450,000 MMK",
+                warranty: "90 days",
+                notes: "Original Apple motherboard. Includes IMEI and serial number.",
+                image: "https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?q=80&w=500&auto=format&fit=crop"
+            },
+            {
+                id: 3,
+                name: "Xiaomi Redmi Note 10",
+                model: "M2101K7AG",
+                specs: "Snapdragon 678, 6GB RAM, 128GB Storage, NFC Support",
+                price: "180,000 MMK",
+                warranty: "120 days",
+                notes: "Compatible motherboard with 4 months warranty. Good condition.",
+                image: "https://images.unsplash.com/photo-1603732551681-2e91159b9dc2?q=80&w=500&auto=format&fit=crop"
+            },
+            {
+                id: 4,
+                name: "Huawei P40 Pro",
+                model: "ELS-NX9",
+                specs: "Kirin 990 5G, 8GB RAM, 256GB Storage, Leica Camera",
+                price: "320,000 MMK",
+                warranty: "90 days",
+                notes: "Original motherboard without Google services. Includes 3 months warranty.",
+                image: "https://images.unsplash.com/photo-1598324153987-1010eafd8a6c?q=80&w=500&auto=format&fit=crop"
+            }
+        ];
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load products from localStorage if available
+            const savedProducts = localStorage.getItem('kst_products');
+            if (savedProducts) {
+                products.length = 0; // Clear existing products
+                products.push(...JSON.parse(savedProducts));
+            }
+            
+            renderProducts();
+            setupEventListeners();
+            updateAdminState(); // Set initial admin state
+            
+            // Toggle password instructions
+            document.getElementById('toggle-instructions').addEventListener('click', () => {
+                const instructions = document.getElementById('password-instructions');
+                const toggleBtn = document.getElementById('toggle-instructions');
+                
+                if (instructions.style.display === 'block') {
+                    instructions.style.display = 'none';
+                    toggleBtn.textContent = 'Show Password Change Instructions';
+                } else {
+                    instructions.style.display = 'block';
+                    toggleBtn.textContent = 'Hide Instructions';
+                }
+            });
+        });
+        
+        // Update admin state on page load
+        function updateAdminState() {
+            if (isAdmin) {
+                adminLoginBtn.innerHTML = '<i class="fas fa-unlock"></i> Logout Admin';
+                adminPanel.style.display = 'block';
+                document.querySelectorAll('.admin-controls').forEach(control => {
+                    control.style.display = 'block';
+                });
+            } else {
+                adminLoginBtn.innerHTML = '<i class="fas fa-lock"></i> Admin Login';
+                adminPanel.style.display = 'none';
+                document.querySelectorAll('.admin-controls').forEach(control => {
+                    control.style.display = 'none';
+                });
+            }
+        }
+        
+        // Render products to the page
+        function renderProducts() {
+            productsContainer.innerHTML = '';
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.dataset.id = product.id;
+                
+                productCard.innerHTML = `
+                    <div class="product-image">
+                        <img src="${product.image}" alt="${product.name}">
+                    </div>
+                    <div class="product-content">
+                        <h3>${product.name}</h3>
+                        <div class="product-model">${product.model}</div>
+                        <div class="product-price">${product.price}</div>
+                        <div class="product-warranty">Warranty: ${product.warranty}</div>
+                        <p>${product.notes}</p>
+                    </div>
+                    <div class="admin-controls" style="display: ${isAdmin ? 'block' : 'none'}">
+                        <button class="delete-btn" data-id="${product.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                productsContainer.appendChild(productCard);
+            });
+            
+            // Save to localStorage
+            localStorage.setItem('kst_products', JSON.stringify(products));
+        }
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            // Product card click to open modal
+            document.addEventListener('click', (e) => {
+                const productCard = e.target.closest('.product-card');
+                if (productCard) {
+                    const productId = parseInt(productCard.dataset.id);
+                    const product = products.find(p => p.id === productId);
+                    
+                    if (product) {
+                        openProductModal(product);
+                    }
+                }
+                
+                // Delete button in product card
+                const deleteBtn = e.target.closest('.delete-btn');
+                if (deleteBtn && isAdmin) {
+                    const productId = parseInt(deleteBtn.dataset.id);
+                    deleteProduct(productId);
+                }
+            });
+            
+            // Close modal
+            closeModal.addEventListener('click', () => {
+                productModal.style.display = 'none';
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === productModal) {
+                    productModal.style.display = 'none';
+                }
+            });
+            
+            // Admin login button
+            adminLoginBtn.addEventListener('click', async () => {
+                if (isAdmin) {
+                    logoutAdmin();
+                } else {
+                    await loginAdmin();
+                }
+            });
+            
+            // Add product button
+            addProductBtn.addEventListener('click', addNewProduct);
+            
+            // Delete button in modal
+            modalDeleteBtn.addEventListener('click', () => {
+                const productId = parseInt(productModal.dataset.productId);
+                if (productId) {
+                    deleteProduct(productId);
+                    productModal.style.display = 'none';
+                }
+            });
+            
+            // Contact for purchase button
+            contactPurchaseBtn.addEventListener('click', () => {
+                alert("Please contact us at +95777400708 or matgteams@gmail.com for purchase inquiries.");
+            });
+        }
+        
+        // Open product modal with details
+        function openProductModal(product) {
+            document.getElementById('modal-product-name').textContent = product.name;
+            document.getElementById('modal-product-model').textContent = product.model;
+            document.getElementById('modal-specs').textContent = product.specs;
+            document.getElementById('modal-price').textContent = product.price;
+            document.getElementById('modal-warranty').textContent = product.warranty;
+            document.getElementById('modal-notes').textContent = product.notes;
+            document.getElementById('modal-image').src = product.image;
+            
+            productModal.dataset.productId = product.id;
+            modalAdminControls.style.display = isAdmin ? 'block' : 'none';
+            
+            productModal.style.display = 'block';
+        }
+        
+        // Admin login function with password hashing
+        async function loginAdmin() {
+            const password = prompt('Please enter admin password:');
+            if (password === null) return; // user cancelled
+            
+            try {
+                const hash = await sha256(password);
+                
+                if (hash === ADMIN_PASSWORD_HASH) {
+                    isAdmin = true;
+                    localStorage.setItem('kst_admin', 'true');
+                    updateAdminState();
+                    alert('Admin mode activated');
+                } else {
+                    alert('Incorrect password');
+                }
+            } catch (e) {
+                console.error('Error hashing password:', e);
+                alert('Error occurred. Please try again.');
+            }
+        }
+        
+        // Logout admin
+        function logoutAdmin() {
+            isAdmin = false;
+            localStorage.removeItem('kst_admin');
+            updateAdminState();
+            alert('Admin mode deactivated');
+        }
+        
+        // Add new product
+        function addNewProduct() {
+            const name = document.getElementById('product-name').value;
+            const model = document.getElementById('product-model').value;
+            const specs = document.getElementById('product-specs').value;
+            const price = document.getElementById('product-price').value;
+            const warranty = document.getElementById('product-warranty').value;
+            const notes = document.getElementById('product-notes').value;
+            const image = document.getElementById('product-image').value;
+            
+            if (!name || !model || !specs || !price || !warranty) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            // Use a default image if none provided
+            const defaultImage = "https://images.unsplash.com/photo-1598324153987-1010eafd8a6c?q=80&w=500&auto=format&fit=crop";
+            
+            const newProduct = {
+                id: Date.now(), // Unique ID
+                name,
+                model,
+                specs,
+                price: `${Number(price).toLocaleString()} MMK`,
+                warranty: `${warranty} days`,
+                notes: notes || 'No additional notes',
+                image: image || defaultImage
+            };
+            
+            products.push(newProduct);
+            renderProducts();
+            
+            // Clear form
+            document.getElementById('product-name').value = '';
+            document.getElementById('product-model').value = '';
+            document.getElementById('product-specs').value = '';
+            document.getElementById('product-price').value = '';
+            document.getElementById('product-warranty').value = '';
+            document.getElementById('product-notes').value = '';
+            document.getElementById('product-image').value = '';
+            
+            alert('Product added successfully!');
+        }
+        
+        // Delete product
+        function deleteProduct(productId) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                const index = products.findIndex(p => p.id === productId);
+                if (index !== -1) {
+                    products.splice(index, 1);
+                    renderProducts();
+                    alert('Product deleted successfully!');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
